@@ -1,0 +1,350 @@
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Login Page  →  #/login/
+═══════════════════════════════════════════════════════════ -->
+<script id="loginForm" type="x-tmpl-mustache">
+  <header>
+    <a href="#/home/" class="container-logo">
+      <img src="images/logo.png" alt="logo" class="logo-pic">
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#/home/">Home</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+    <div class="cta">
+      <a href="#/sign-up/"><button>Sign Up</button></a>
+    </div>
+  </header>
+
+  <div class="wrap-container">
+    <div class="container">
+      <h2>Welcome Back</h2>
+      <p>Login to your account</p>
+
+      <div id="loginAlert"></div>
+
+      <form id="loginform" novalidate>
+        <div class="field">
+          <input type="text" id="loginUsername" placeholder="Username">
+          <span class="msg" id="msg-loginUsername"></span>
+        </div>
+        <div class="field">
+          <input type="password" id="loginPassword" placeholder="Password">
+          <span class="msg" id="msg-loginPassword"></span>
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+
+      <p class="redirect">Don't have an account? <a href="#/sign-up/">Sign Up</a></p>
+    </div>
+  </div>
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Sign-Up Page  →  #/sign-up/
+═══════════════════════════════════════════════════════════ -->
+<script id="signupForm" type="x-tmpl-mustache">
+  <header>
+    <a href="#/home/" class="container-logo">
+      <img src="images/logo.png" alt="logo">
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#/home/">Home</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+    <div class="cta">
+      <a href="#/login/"><button>Login</button></a>
+    </div>
+  </header>
+
+  <div class="wrap-container">
+    <div class="container">
+      <h2>Join the Community</h2>
+      <p>Create your own Blog Profile</p>
+
+      <div id="submitAlert"></div>
+
+      <form id="signupform" novalidate>
+        <div class="field">
+          <input type="text" id="username" placeholder="Username">
+          <span class="msg" id="msg-username"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="full_name" placeholder="Full Name">
+          <span class="msg" id="msg-full_name"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="nickname" placeholder="Nickname">
+          <span class="msg" id="msg-nickname"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="address" placeholder="Address">
+          <span class="msg" id="msg-address"></span>
+        </div>
+        <div class="field">
+          <input type="date" id="birthday" placeholder="Birthday (YYYY-MM-DD)">
+          <span class="msg" id="msg-birthday"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="contact" placeholder="Contact No.">
+          <span class="msg" id="msg-contact"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="email" placeholder="Email">
+          <span class="msg" id="msg-email"></span>
+        </div>
+        <div class="field">
+          <input type="password" id="password" placeholder="Password">
+          <span class="msg" id="msg-password"></span>
+        </div>
+        <button type="submit" class="submit-btn">Sign Up</button>
+      </form>
+
+        <!-- Last submitted user details (outside the white card) -->
+  <div id="outputContainer" class="output-container" style="display:none;">
+    <h3>Submitted Details</h3>
+    <div id="outputContent"></div>
+  </div>
+
+      <p class="redirect">Already have an account? <a href="#/login/">Login</a></p>
+
+      <!-- Search bar -->
+      <div class="search-section">
+        <div class="search-bar-row">
+          <input type="text" id="userSearchInput" placeholder="Search registered users…">
+          <button type="button" id="userSearchBtn">Search</button>
+        </div>
+        <div id="searchResults" class="search-results" style="display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- All registered users log (outside the white card) -->
+  <div class="users-log" id="usersLog" style="display:none;">
+    <h3>All Registered Users</h3>
+    <div id="usersLogContent"></div>
+  </div>
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Home / Blog Page  →  #/home/
+═══════════════════════════════════════════════════════════ -->
+<script id="homePage" type="x-tmpl-mustache">
+  <header>
+    <a href="#/home/" class="container-logo">
+      <img src="images/logo.png" alt="logo" class="logo-pic">
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#/home/">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </nav>
+    <div class="cta" id="headerCta">
+      {{#loggedIn}}
+        <span style="font-size:14px; font-weight:600; margin-right:12px;">Hi, {{username}}</span>
+        <a href="#/profile/"><button>Profile</button></a>
+        <button id="logoutBtn">Logout</button>
+      {{/loggedIn}}
+      {{^loggedIn}}
+        <a href="#/sign-up/"><button>Signup</button></a>
+        <a href="#/login/"><button>Login</button></a>
+      {{/loggedIn}}
+    </div>
+  </header>
+
+  <section class="hero" style="margin-left: 110px;">
+    <p class="section-label">Welcome to Weconnect</p>
+    <h1>Create your own Stories</h1>
+  </section>
+
+  <section class="blog-section">
+    <p class="section-label">Latest Post</p>
+    <h2>Stories from the community</h2>
+  </section>
+
+  <div class="blog-grid">
+    <div class="blog-card">
+      <img src="images/car.jpg" alt="Post Image">
+      <div class="blog-body">
+        <h3>Porsche Review</h3>
+        <p>Built for the Porsche community, by the Porsche community.
+           A space where fans, owners, and dreamers come together to
+           share their love for the brand. Expect honest reviews, heated
+           debates, and stories straight from the driver's seat.</p>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <img src="images/venice.jpg" alt="Post Image">
+      <div class="blog-body">
+        <h3>Venice the Alps</h3>
+        <p>Two destinations. One unforgettable escape.
+           Venice enchants with its golden light and ancient charm.
+           The Alps inspire with their silence and scale. Together,
+           they make one of the most extraordinary journeys Europe has to offer.</p>
+      </div>
+    </div>
+
+    <div class="blog-card">
+      <img src="images/cuisine.jpg" alt="Post Image">
+      <div class="blog-body">
+        <h3>Chinese Cuisine</h3>
+        <p>Chinese cuisine is a diverse, ancient culinary tradition built on
+           balancing color, aroma, flavor, and texture, often emphasizing harmony,
+           health, and shared dining. It features staples like rice and noodles,
+           high-heat cooking techniques, and bold flavors
+           from soy sauce, garlic, and ginger.</p>
+      </div>
+    </div>
+     <div class="blog-card">
+      <img src="images/tech.jpg" alt="Post Image">
+      <div class="blog-body">
+        <h3>Chinese Cuisine</h3>
+        <p>Chinese cuisine is a diverse, ancient culinary tradition built on
+           balancing color, aroma, flavor, and texture, often emphasizing harmony,
+           health, and shared dining. It features staples like rice and noodles,
+           high-heat cooking techniques, and bold flavors
+           from soy sauce, garlic, and ginger.</p>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Profile Page  →  #/profile/
+═══════════════════════════════════════════════════════════ -->
+<script id="profilePage" type="x-tmpl-mustache">
+  <header>
+    <a href="#/home/" class="container-logo">
+      <img src="images/logo.png" alt="logo" class="logo-pic">
+    </a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#/home/">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </nav>
+    <div class="cta">
+      <a href="#/home/"><button>Back to Home</button></a>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="wrap-container">
+    <div class="container">
+      <h2>My Profile</h2>
+      <p>Update your account information</p>
+
+      <div id="profileAlert"></div>
+
+      <form id="profileForm" novalidate>
+        <div class="field">
+          <input type="text" id="p_username" placeholder="Username">
+          <span class="msg" id="msg-p_username"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="p_full_name" placeholder="Full Name">
+          <span class="msg" id="msg-p_full_name"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="p_nickname" placeholder="Nickname">
+          <span class="msg" id="msg-p_nickname"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="p_address" placeholder="Address">
+          <span class="msg" id="msg-p_address"></span>
+        </div>
+        <div class="field">
+          <input type="date" id="p_birthday" placeholder="Birthday">
+          <span class="msg" id="msg-p_birthday"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="p_contact" placeholder="Contact No.">
+          <span class="msg" id="msg-p_contact"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="p_email" placeholder="Email">
+          <span class="msg" id="msg-p_email"></span>
+        </div>
+        <div class="field">
+          <input type="password" id="p_new_password" placeholder="New Password (leave blank to keep current)">
+          <span class="msg" id="msg-p_new_password"></span>
+        </div>
+        <button type="submit" class="submit-btn">Update Profile</button>
+      </form>
+    </div>
+  </div>
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Output fields (submitted user details)
+═══════════════════════════════════════════════════════════ -->
+<script id="template-output-fields" type="x-tmpl-mustache">
+  {{#fields}}
+    {{#isAge}}
+      <p><strong>{{key}}</strong><span><span class="age-badge">{{value}}</span></span></p>
+    {{/isAge}}
+    {{^isAge}}
+      <p><strong>{{key}}</strong><span>{{value}}</span></p>
+    {{/isAge}}
+  {{/fields}}
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Users log (with search bar)
+═══════════════════════════════════════════════════════════ -->
+<script id="template-users-log" type="x-tmpl-mustache">
+  {{#noResult}}
+    <p class="users-no-result">No users match your search.</p>
+  {{/noResult}}
+
+  {{#users}}
+    <div class="user-entry">
+      <div class="entry-header">
+        User #{{index}} – {{username}}
+        <div class="entry-actions">
+          <button class="btn-remove entry-btn entry-btn-danger" data-username="{{username}}">Remove</button>
+        </div>
+      </div>
+      {{#fields}}
+        <div class="entry-row"><span>{{key}}</span><span>{{value}}</span></div>
+      {{/fields}}
+    </div>
+  {{/users}}
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE: Inline edit form
+═══════════════════════════════════════════════════════════ -->
+<script id="template-edit-form" type="x-tmpl-mustache">
+  <div class="edit-form">
+    <p class="edit-alert" style="display:none;"></p>
+    <div class="edit-grid">
+      <input class="ef-username" type="text"  placeholder="Username"    value="{{username}}">
+      <input class="ef-fullname" type="text"  placeholder="Full Name"   value="{{fullName}}">
+      <input class="ef-nickname" type="text"  placeholder="Nickname"    value="{{nickname}}">
+      <input class="ef-address"  type="text"  placeholder="Address"     value="{{address}}">
+      <input class="ef-birthday" type="date"  placeholder="Birthday"    value="{{birthday}}">
+      <input class="ef-contact"  type="text"  placeholder="Contact No." value="{{contact}}">
+      <input class="ef-email"    type="email" placeholder="Email"       value="{{email}}">
+    </div>
+    <div class="edit-form-actions">
+      <button class="btn-save-edit entry-btn entry-btn-primary" data-index="{{realIndex}}">Save</button>
+      <button class="btn-cancel-edit entry-btn">Cancel</button>
+    </div>
+  </div>
+</script>
