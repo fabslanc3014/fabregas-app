@@ -10,21 +10,6 @@ require_once __DIR__ . '/functions/functions.php';
 
 $app = new \Slim\Slim();
 
-// ✅ CORS - runs before every request
-$app->hook('slim.before', function () use ($app) {
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-});
-
-// ✅ Handle OPTIONS preflight requests (browser sends this before POST)
-$app->options('/(:name+)', function () use ($app) {
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    $app->response->setStatus(200);
-});
-
 
 $app->get('/users', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
