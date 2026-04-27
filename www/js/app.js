@@ -4,6 +4,7 @@ $(document).ready(function () {
 
     const App = {
         canvas: $("#app"),
+        //api: "api/",
         api: "https://m.gohumano.com/apislim4lance/",
         usertype: localStorage.getItem("usertype"),
         token: localStorage.getItem("token"),
@@ -46,7 +47,7 @@ $(document).ready(function () {
 
             // GET route with parameter
             $.ajax({
-                url: App.api + "users/" + username,
+                url: "api/users/" + username,
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -138,7 +139,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - login
                 $.ajax({
-                    url: App.api + "ajax/login",
+                    url: "api/ajax/login",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -240,7 +241,7 @@ $(document).ready(function () {
 
             // GET route - no parameters
             function loadAndRenderUsers() {
-                $.getJSON(App.api + "users", function (res) {
+                $.getJSON("api/users", function (res) {
                     if (!res.success || res.users.length === 0) return;
 
                     var users = res.users.map(function (userObj, index) {
@@ -271,14 +272,14 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: App.api + "users/delete",
+                    url: "api/users/delete",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: username }),
                     success: function (res) {
                         if (res.success) {
                             loadAndRenderUsers();
-                            $.getJSON(App.api + "users", function (r) {
+                            $.getJSON("api/users", function (r) {
                                 if (r.success) allUsersCache = r.users;
                             });
                         } else {
@@ -294,7 +295,7 @@ $(document).ready(function () {
             // Search cache - GET route no parameters
             var allUsersCache = [];
 
-            $.getJSON(App.api + "users", function (res) {
+            $.getJSON("api/users", function (res) {
                 if (res.success && res.users.length) {
                     allUsersCache = res.users;
                 }
@@ -369,7 +370,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - register
                 $.ajax({
-                    url: App.api + "ajax/register",
+                    url: "api/ajax/register",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -408,7 +409,7 @@ $(document).ready(function () {
                             loadAndRenderUsers();
 
                             // Refresh search cache
-                            $.getJSON(App.api + "users", function (r) {
+                            $.getJSON("api/users", function (r) {
                                 if (r.success) allUsersCache = r.users;
                             });
 
@@ -543,7 +544,7 @@ $(document).ready(function () {
 
                     // POST with parameter in URL
                     $.ajax({
-                        url: App.api + "users/" + user.username + "/update",
+                        url: "api/users/" + user.username + "/update",
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
