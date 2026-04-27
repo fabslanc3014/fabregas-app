@@ -2,7 +2,7 @@
 // functions.php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// ── CREATE ──
+// CREATE 
 function createUser($data) {
     try {
         $password = password_hash($data['password'] ?? '', PASSWORD_BCRYPT);
@@ -26,7 +26,7 @@ function createUser($data) {
     }
 }
 
-// ── GET ALL ──
+// GET ALL
 function getAllUsers() {
     try {
         $users = ORM::for_table('users_table')
@@ -40,7 +40,7 @@ function getAllUsers() {
     }
 }
 
-// ── GET ONE ──
+// GET ONE
 function getUserByUsername($username) {
     try {
         $user = ORM::for_table('users_table')
@@ -58,7 +58,7 @@ function getUserByUsername($username) {
     }
 }
 
-// ── UPDATE ──
+// UPDATE
 function updateUser($data) {
     try {
         $user = ORM::for_table('users_table')
@@ -97,7 +97,7 @@ function updateUser($data) {
     }
 }
 
-// ── DELETE ──
+// ── DELETE
 function deleteUser($username) {
     try {
         $user = ORM::for_table('users_table')
