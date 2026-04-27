@@ -10,19 +10,31 @@ require_once __DIR__ . '/functions/functions.php';
 
 $app = new \Slim\Slim();
 
+// ── CORS Middleware for Slim 2 ──
+$app->hook('slim.before', function () use ($app) {
+    $app->response->headers->set('Access-Control-Allow-Origin', '*');
+    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
+    // Handle preflight OPTIONS request
+    if ($app->request->getMethod() === 'OPTIONS') {
+        $app->response->setStatus(200);
+        $app->stop();
+    }
+});
+
+// ── GET ROUTES ──
 $app->get('/users', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     echo json_encode(getAllUsers());
 });
-
 
 $app->get('/users/:username', function ($username) use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     echo json_encode(getUserByUsername($username));
 });
 
-
+// ── POST ROUTES ──
 $app->post('/register', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
@@ -41,7 +53,6 @@ $app->post('/users/delete', function () use ($app) {
     echo json_encode(deleteUser($data['username'] ?? ''));
 });
 
-
 $app->post('/users/:username/update', function ($username) use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
@@ -49,7 +60,7 @@ $app->post('/users/:username/update', function ($username) use ($app) {
     echo json_encode(updateUser($data));
 });
 
-
+// ── AJAX ROUTES ──
 $app->post('/ajax/users/search', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data     = json_decode($app->request->getBody(), true);
