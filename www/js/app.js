@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     const App = {
         canvas: $("#app"),
-        api: "https://m.gohumano.com/apislim4lance/api/index.php",
+        api: "https://m.gohumano.com/apislim4lance/",
         usertype: localStorage.getItem("usertype"),
         token: localStorage.getItem("token"),
 
