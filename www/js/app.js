@@ -4,8 +4,7 @@ $(document).ready(function () {
 
     const App = {
         canvas: $("#app"),
-        //api: "api/",
-        api: "api/https://m.gohumano.com/apislim4lance/",
+        api: "https://m.gohumano.com/apislim4lance",
         usertype: localStorage.getItem("usertype"),
         token: localStorage.getItem("token"),
 
@@ -47,7 +46,7 @@ $(document).ready(function () {
 
             // GET route with parameter
             $.ajax({
-                url: "api/users/" + username,
+                url: App.api + "/users/" + username,
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -139,7 +138,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - login
                 $.ajax({
-                    url: "api/ajax/login",
+                    url: App.api + "/ajax/login",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -161,7 +160,8 @@ $(document).ready(function () {
                                 .text(res.message).show();
                         }
                     },
-                    error: function () {
+                    error: function (xhr) {
+                        console.error("Login error:", xhr.status, xhr.responseText);
                         $alert.removeClass("alert-success").addClass("alert-error")
                             .text("Server error. Please try again.").show();
                     }
@@ -241,24 +241,29 @@ $(document).ready(function () {
 
             // GET route - no parameters
             function loadAndRenderUsers() {
-                $.getJSON("api/users", function (res) {
-                    if (!res.success || res.users.length === 0) return;
+                $.ajax({
+                    url: App.api + "/users",
+                    method: "GET",
+                    contentType: "application/json",
+                    success: function (res) {
+                        if (!res.success || res.users.length === 0) return;
 
-                    var users = res.users.map(function (userObj, index) {
-                        return {
-                            index: index + 1,
-                            realIndex: index,
-                            username: userObj.username,
-                            fields: buildUserFields(userObj)
-                        };
-                    });
-                    $("#usersLogContent").html(
-                        $.Mustache.render("template-users-log", { users: users })
-                    );
-                    $("#usersLog").show();
-
-                }).fail(function () {
-                    console.error("Could not load users from server.");
+                        var users = res.users.map(function (userObj, index) {
+                            return {
+                                index: index + 1,
+                                realIndex: index,
+                                username: userObj.username,
+                                fields: buildUserFields(userObj)
+                            };
+                        });
+                        $("#usersLogContent").html(
+                            $.Mustache.render("template-users-log", { users: users })
+                        );
+                        $("#usersLog").show();
+                    },
+                    error: function (xhr) {
+                        console.error("Could not load users from server.", xhr.status, xhr.responseText);
+                    }
                 });
             }
             loadAndRenderUsers();
@@ -272,15 +277,20 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: "api/users/delete",
+                    url: App.api + "/users/delete",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: username }),
                     success: function (res) {
                         if (res.success) {
                             loadAndRenderUsers();
-                            $.getJSON("api/users", function (r) {
-                                if (r.success) allUsersCache = r.users;
+                            $.ajax({
+                                url: App.api + "/users",
+                                method: "GET",
+                                contentType: "application/json",
+                                success: function (r) {
+                                    if (r.success) allUsersCache = r.users;
+                                }
                             });
                         } else {
                             alert("Could not delete user: " + res.message);
@@ -295,9 +305,14 @@ $(document).ready(function () {
             // Search cache - GET route no parameters
             var allUsersCache = [];
 
-            $.getJSON("api/users", function (res) {
-                if (res.success && res.users.length) {
-                    allUsersCache = res.users;
+            $.ajax({
+                url: App.api + "/users",
+                method: "GET",
+                contentType: "application/json",
+                success: function (res) {
+                    if (res.success && res.users.length) {
+                        allUsersCache = res.users;
+                    }
                 }
             });
 
@@ -370,7 +385,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - register
                 $.ajax({
-                    url: "api/ajax/register",
+                    url: App.api + "/ajax/register",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -409,8 +424,13 @@ $(document).ready(function () {
                             loadAndRenderUsers();
 
                             // Refresh search cache
-                            $.getJSON("api/users", function (r) {
-                                if (r.success) allUsersCache = r.users;
+                            $.ajax({
+                                url: App.api + "/users",
+                                method: "GET",
+                                contentType: "application/json",
+                                success: function (r) {
+                                    if (r.success) allUsersCache = r.users;
+                                }
                             });
 
                             $("#signupform")[0].reset();
@@ -422,7 +442,8 @@ $(document).ready(function () {
                                 .text(res.message).show();
                         }
                     },
-                    error: function () {
+                    error: function (xhr) {
+                        console.error("Register error:", xhr.status, xhr.responseText);
                         $alertBox.removeClass("alert-success").addClass("alert-error")
                             .text("Server error. Please try again.").show();
                     }
@@ -544,7 +565,7 @@ $(document).ready(function () {
 
                     // POST with parameter in URL
                     $.ajax({
-                        url: "api/users/" + user.username + "/update",
+                        url: App.api + "/users/" + user.username + "/update",
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
@@ -574,7 +595,8 @@ $(document).ready(function () {
                                     .text(res.message).show();
                             }
                         },
-                        error: function () {
+                        error: function (xhr) {
+                            console.error("Update error:", xhr.status, xhr.responseText);
                             $alert.removeClass("alert-success").addClass("alert-error")
                                 .text("Server error. Please try again.").show();
                         }
