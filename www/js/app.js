@@ -47,7 +47,7 @@ $(document).ready(function () {
 
             // GET route with parameter
             $.ajax({
-                url: "api/users/" + username,
+                url: "users/" + username,
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -139,7 +139,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - login
                 $.ajax({
-                    url: "api/ajax/login",
+                    url: "ajax/login",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -272,7 +272,7 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: "api/users/delete",
+                    url: "users/delete",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: username }),
@@ -370,7 +370,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - register
                 $.ajax({
-                    url: "api/ajax/register",
+                    url: "ajax/register",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -544,7 +544,7 @@ $(document).ready(function () {
 
                     // POST with parameter in URL
                     $.ajax({
-                        url: "api/users/" + user.username + "/update",
+                        url: "users/" + user.username + "/update",
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
