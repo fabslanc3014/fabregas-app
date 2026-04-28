@@ -10,17 +10,6 @@ require_once __DIR__ . '/functions/functions.php';
 
 $app = new \Slim\Slim();
 
-// ── CORS Headers ──
-$app->response->headers->set('Access-Control-Allow-Origin', '*');
-$app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-$app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-
-$app->options('/:x+', function () use ($app) {
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-});
-
 
 $app->get('/users', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
