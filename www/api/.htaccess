@@ -1,16 +1,5 @@
 RewriteEngine On
-RewriteBase /apislim4lance/api/
 
-# CORS headers at Apache level
-Header always set Access-Control-Allow-Origin "*"
-Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
-Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
-
-# Handle OPTIONS preflight
-RewriteCond %{REQUEST_METHOD} OPTIONS
-RewriteRule ^(.*)$ $1 [R=200,L]
-
-# Route everything through Slim's index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
