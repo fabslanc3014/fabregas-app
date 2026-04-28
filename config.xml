@@ -8,6 +8,23 @@
         Apache Cordova Team
     </author>
     <content src="index.html" />
+
+    <!-- Allow all network requests (required for AJAX calls) -->
+    <access origin="*" />
+
+    <!-- Allow navigation to external URLs -->
+    <allow-navigation href="http://*/*" />
+    <allow-navigation href="https://*/*" />
+
+    <!-- Allow launching external apps/links -->
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+
+    <!-- Android specific: allow mixed content and cleartext -->
+    <platform name="android">
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
+    </platform>
+
 </widget>
