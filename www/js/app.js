@@ -4,7 +4,8 @@ $(document).ready(function () {
 
     const App = {
         canvas: $("#app"),
-        api: "https://m.gohumano.com/apislim4lance",
+        //api: "api/",
+        api: "https://m.gohumano.com/apislim4lance/",
         usertype: localStorage.getItem("usertype"),
         token: localStorage.getItem("token"),
 
@@ -43,8 +44,10 @@ $(document).ready(function () {
                 callback(null);
                 return;
             }
+
+            // GET route with parameter
             $.ajax({
-                url: App.api + "/users/" + username,
+                url: "api/users/" + username,
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -62,6 +65,7 @@ $(document).ready(function () {
             });
         },
 
+        // Compute Age
         computeAge: function (birthday) {
             var dob = new Date(birthday);
             var today = new Date();
@@ -85,6 +89,7 @@ $(document).ready(function () {
         initialize: function () { }
     };
 
+    /* ── Logout ── */
     function bindLogout() {
         $(document).off("click", "#logoutBtn").on("click", "#logoutBtn", function () {
             App.removeToken();
@@ -132,8 +137,9 @@ $(document).ready(function () {
                     setField("loginPassword", true, "Good");
                 }
 
+                // AJAX POST route - login
                 $.ajax({
-                    url: App.api + "/ajax/login",
+                    url: "api/ajax/login",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -143,8 +149,10 @@ $(document).ready(function () {
                             App.setToken(token);
                             App.setUsername(res.user.username);
                             App.setUserType(res.user.usertype || "user");
+
                             $alert.removeClass("alert-error").addClass("alert-success")
                                 .text("Welcome back, " + res.user.username + "! Redirecting...").show();
+
                             setTimeout(function () {
                                 window.location.hash = "#/home/";
                             }, 1000);
@@ -153,8 +161,7 @@ $(document).ready(function () {
                                 .text(res.message).show();
                         }
                     },
-                    error: function (xhr) {
-                        console.error("Login error:", xhr.status, xhr.responseText);
+                    error: function () {
                         $alert.removeClass("alert-success").addClass("alert-error")
                             .text("Server error. Please try again.").show();
                     }
@@ -232,53 +239,48 @@ $(document).ready(function () {
                 });
             }
 
+            // GET route - no parameters
             function loadAndRenderUsers() {
-                $.ajax({
-                    url: App.api + "/users",
-                    method: "GET",
-                    contentType: "application/json",
-                    success: function (res) {
-                        if (!res.success || res.users.length === 0) return;
-                        var users = res.users.map(function (userObj, index) {
-                            return {
-                                index: index + 1,
-                                realIndex: index,
-                                username: userObj.username,
-                                fields: buildUserFields(userObj)
-                            };
-                        });
-                        $("#usersLogContent").html(
-                            $.Mustache.render("template-users-log", { users: users })
-                        );
-                        $("#usersLog").show();
-                    },
-                    error: function (xhr) {
-                        console.error("Could not load users from server.", xhr.status, xhr.responseText);
-                    }
+                $.getJSON("api/users", function (res) {
+                    if (!res.success || res.users.length === 0) return;
+
+                    var users = res.users.map(function (userObj, index) {
+                        return {
+                            index: index + 1,
+                            realIndex: index,
+                            username: userObj.username,
+                            fields: buildUserFields(userObj)
+                        };
+                    });
+                    $("#usersLogContent").html(
+                        $.Mustache.render("template-users-log", { users: users })
+                    );
+                    $("#usersLog").show();
+
+                }).fail(function () {
+                    console.error("Could not load users from server.");
                 });
             }
             loadAndRenderUsers();
 
+            // POST route - delete
             $(document).off("click", ".btn-remove").on("click", ".btn-remove", function () {
                 var username = $(this).data("username");
+
                 if (!confirm('Are you sure you want to delete "' + username + '"? This cannot be undone.')) {
                     return;
                 }
+
                 $.ajax({
-                    url: App.api + "/users/delete",
+                    url: "api/users/delete",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: username }),
                     success: function (res) {
                         if (res.success) {
                             loadAndRenderUsers();
-                            $.ajax({
-                                url: App.api + "/users",
-                                method: "GET",
-                                contentType: "application/json",
-                                success: function (r) {
-                                    if (r.success) allUsersCache = r.users;
-                                }
+                            $.getJSON("api/users", function (r) {
+                                if (r.success) allUsersCache = r.users;
                             });
                         } else {
                             alert("Could not delete user: " + res.message);
@@ -290,26 +292,24 @@ $(document).ready(function () {
                 });
             });
 
+            // Search cache - GET route no parameters
             var allUsersCache = [];
 
-            $.ajax({
-                url: App.api + "/users",
-                method: "GET",
-                contentType: "application/json",
-                success: function (res) {
-                    if (res.success && res.users.length) {
-                        allUsersCache = res.users;
-                    }
+            $.getJSON("api/users", function (res) {
+                if (res.success && res.users.length) {
+                    allUsersCache = res.users;
                 }
             });
 
             function runSearch() {
                 var query = $("#userSearchInput").val().trim().toLowerCase();
                 var $results = $("#searchResults");
+
                 if (!query) {
                     $results.hide().html("");
                     return;
                 }
+
                 var matches = allUsersCache.filter(function (u) {
                     return (
                         (u.username  || "").toLowerCase().includes(query) ||
@@ -318,10 +318,12 @@ $(document).ready(function () {
                         (u.email     || "").toLowerCase().includes(query)
                     );
                 });
+
                 if (!matches.length) {
                     $results.html('<p class="search-no-result">No users found.</p>').show();
                     return;
                 }
+
                 var html = matches.map(function (u) {
                     return (
                         '<div class="search-result-item">' +
@@ -331,6 +333,7 @@ $(document).ready(function () {
                         '</div>'
                     );
                 }).join("");
+
                 $results.html(html).show();
             }
 
@@ -338,6 +341,7 @@ $(document).ready(function () {
                 runSearch();
             });
 
+            // AJAX POST route - register
             $("#signupform").off("submit").on("submit", function (e) {
                 e.preventDefault();
 
@@ -364,8 +368,9 @@ $(document).ready(function () {
 
                 var age = App.computeAge(formValues.birthday);
 
+                // AJAX POST route - register
                 $.ajax({
-                    url: App.api + "/ajax/register",
+                    url: "api/ajax/register",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -400,15 +405,12 @@ $(document).ready(function () {
                                 $.Mustache.render("template-output-fields", { fields: buildUserFields(displayObj) })
                             );
                             $("#outputContainer").show();
+
                             loadAndRenderUsers();
 
-                            $.ajax({
-                                url: App.api + "/users",
-                                method: "GET",
-                                contentType: "application/json",
-                                success: function (r) {
-                                    if (r.success) allUsersCache = r.users;
-                                }
+                            // Refresh search cache
+                            $.getJSON("api/users", function (r) {
+                                if (r.success) allUsersCache = r.users;
                             });
 
                             $("#signupform")[0].reset();
@@ -420,8 +422,7 @@ $(document).ready(function () {
                                 .text(res.message).show();
                         }
                     },
-                    error: function (xhr) {
-                        console.error("Register error:", xhr.status, xhr.responseText);
+                    error: function () {
                         $alertBox.removeClass("alert-success").addClass("alert-error")
                             .text("Server error. Please try again.").show();
                     }
@@ -476,6 +477,7 @@ $(document).ready(function () {
                 $("#p_contact").val(user.contact    || "");
                 $("#p_email").val(user.email        || "");
 
+                // POST route with parameter - update
                 $("#profileForm").off("submit").on("submit", function (e) {
                     e.preventDefault();
 
@@ -540,8 +542,9 @@ $(document).ready(function () {
 
                     var age = App.computeAge(updated.birthday);
 
+                    // POST with parameter in URL
                     $.ajax({
-                        url: App.api + "/users/" + user.username + "/update",
+                        url: "api/users/" + user.username + "/update",
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
@@ -560,16 +563,18 @@ $(document).ready(function () {
                             if (res.success) {
                                 App.setUsername(res.user.username);
                                 user = res.user;
+
                                 $alert.removeClass("alert-error").addClass("alert-success")
                                     .text("Profile updated successfully!").show();
+
                                 $("#p_new_password").val("");
+
                             } else {
                                 $alert.removeClass("alert-success").addClass("alert-error")
                                     .text(res.message).show();
                             }
                         },
-                        error: function (xhr) {
-                            console.error("Update error:", xhr.status, xhr.responseText);
+                        error: function () {
                             $alert.removeClass("alert-success").addClass("alert-error")
                                 .text("Server error. Please try again.").show();
                         }
