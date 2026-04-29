@@ -1,8 +1,8 @@
 <?php
 // functions.php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/config.php';
 
-// CREATE 
+// CREATE
 function createUser($data) {
     try {
         $password = password_hash($data['password'] ?? '', PASSWORD_BCRYPT);
@@ -48,7 +48,10 @@ function getUserByUsername($username) {
             ->find_one();
 
         if ($user) {
-            return ["success" => true, "user" => $user->as_array()];
+            // Return without password
+            $data = $user->as_array();
+            unset($data['password']);
+            return ["success" => true, "user" => $data];
         }
 
         return ["success" => false, "message" => "User not found."];
@@ -97,7 +100,7 @@ function updateUser($data) {
     }
 }
 
-// ── DELETE
+// DELETE
 function deleteUser($username) {
     try {
         $user = ORM::for_table('users_table')
@@ -115,7 +118,7 @@ function deleteUser($username) {
     }
 }
 
-// ── LOGIN ──
+// LOGIN
 function loginUser($username, $password) {
     try {
         $user = ORM::for_table('users_table')
@@ -139,4 +142,3 @@ function loginUser($username, $password) {
         return ["success" => false, "message" => $e->getMessage()];
     }
 }
-?>
