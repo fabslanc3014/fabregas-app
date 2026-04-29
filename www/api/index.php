@@ -1,80 +1,74 @@
 <?php
-/* ── index.php ── */
-
 if (!function_exists('get_magic_quotes_gpc')) {
     function get_magic_quotes_gpc() {
         return false;
     }
 }
-
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/functions/database.php';
 require_once __DIR__ . '/functions/functions.php';
 
 $app = new \Slim\Slim();
 
-// ── CORS — allow the front-end origin to reach this API ──────────────────────
-$app->add(new \Slim\Middleware\ContentTypes());
 
-$app->hook('slim.before', function () use ($app) {
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-});
-
-// Handle pre-flight OPTIONS requests
-$app->options('/(:path+)', function () use ($app) {
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-    $app->response->setStatus(200);
-});
-
-// ── Helper ───────────────────────────────────────────────────────────────────
-function jsonResponse($app, $data) {
-    $app->response->headers->set('Content-Type', 'application/json');
-    echo json_encode($data);
-}
-
-// ── GET /users ────────────────────────────────────────────────────────────────
-// Called by: loadAndRenderUsers(), allUsersCache refresh, search cache
 $app->get('/users', function () use ($app) {
-    jsonResponse($app, getAllUsers());
+    $app->response->headers->set('Content-Type', 'application/json');
+    echo json_encode(getAllUsers());
 });
 
-// ── GET /users/:username ──────────────────────────────────────────────────────
-// Called by: App.fetchUser() on the profile page
+
 $app->get('/users/:username', function ($username) use ($app) {
-    jsonResponse($app, getUserByUsername($username));
+    $app->response->headers->set('Content-Type', 'application/json');
+    echo json_encode(getUserByUsername($username));
 });
 
-// ── POST /ajax/login ──────────────────────────────────────────────────────────
-// Called by: login form submit
-$app->post('/ajax/login', function () use ($app) {
+
+$app->post('/register', function () use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
-    jsonResponse($app, loginUser($data['username'] ?? '', $data['password'] ?? ''));
+    echo json_encode(createUser($data));
 });
 
-// ── POST /ajax/register ───────────────────────────────────────────────────────
-// Called by: signup form submit
-$app->post('/ajax/register', function () use ($app) {
+$app->post('/login', function () use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
-    jsonResponse($app, createUser($data));
+    echo json_encode(loginUser($data['username'] ?? '', $data['password'] ?? ''));
 });
 
-// ── POST /users/delete ────────────────────────────────────────────────────────
-// Called by: .btn-remove click
 $app->post('/users/delete', function () use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
-    jsonResponse($app, deleteUser($data['username'] ?? ''));
+    echo json_encode(deleteUser($data['username'] ?? ''));
 });
 
-// ── POST /users/:username/update ──────────────────────────────────────────────
-// Called by: profile form submit
+
 $app->post('/users/:username/update', function ($username) use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
     $data['original_username'] = $username;
-    jsonResponse($app, updateUser($data));
+    echo json_encode(updateUser($data));
+});
+
+
+$app->post('/ajax/users/search', function () use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
+    $data     = json_decode($app->request->getBody(), true);
+    $username = $data['username'] ?? '';
+    $result   = !empty($username) ? getUserByUsername($username) : getAllUsers();
+    echo json_encode($result);
+});
+
+$app->post('/ajax/login', function () use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
+    $data = json_decode($app->request->getBody(), true);
+    echo json_encode(loginUser($data['username'] ?? '', $data['password'] ?? ''));
+});
+
+$app->post('/ajax/register', function () use ($app) {
+    $app->response->headers->set('Content-Type', 'application/json');
+    $data = json_decode($app->request->getBody(), true);
+    echo json_encode(createUser($data));
 });
 
 $app->run();
+?>
