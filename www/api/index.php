@@ -10,18 +10,6 @@ require_once __DIR__ . '/functions/functions.php';
 
 $app = new \Slim\Slim();
 
-// ── CORS Headers ──
-$app->hook('slim.before', function() use ($app) {
-    $app->response->headers->set('Access-Control-Allow-Origin', '*');
-    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-});
-
-// ── Handle OPTIONS preflight requests ──
-$app->options('/:x+', function() use ($app) {
-    $app->response->setStatus(200);
-});
-
 
 $app->get('/users', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
