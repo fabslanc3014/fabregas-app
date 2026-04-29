@@ -138,7 +138,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - login
                 $.ajax({
-                    url: App.api + "ajax/login",   // FIXED
+                    url: App.api + "users/login",   // FIXED
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
