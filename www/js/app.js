@@ -46,7 +46,7 @@ $(document).ready(function () {
 
             // GET route with parameter
             $.ajax({
-                url: "api/users/" + username,
+                url: App.api + "users/" + username,   // FIXED
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - login
                 $.ajax({
-                    url: "api/ajax/login",
+                    url: App.api + "ajax/login",   // FIXED
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -240,7 +240,7 @@ $(document).ready(function () {
 
             // GET route - no parameters
             function loadAndRenderUsers() {
-                $.getJSON("api/users", function (res) {
+                $.getJSON(App.api + "users", function (res) {   // FIXED
                     if (!res.success || res.users.length === 0) return;
 
                     var users = res.users.map(function (userObj, index) {
@@ -271,14 +271,14 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: "api/users/delete",
+                    url: App.api + "users/delete",   // FIXED
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: username }),
                     success: function (res) {
                         if (res.success) {
                             loadAndRenderUsers();
-                            $.getJSON("api/users", function (r) {
+                            $.getJSON(App.api + "users", function (r) {   // FIXED
                                 if (r.success) allUsersCache = r.users;
                             });
                         } else {
@@ -294,7 +294,7 @@ $(document).ready(function () {
             // Search cache - GET route no parameters
             var allUsersCache = [];
 
-            $.getJSON("api/users", function (res) {
+            $.getJSON(App.api + "users", function (res) {   // FIXED
                 if (res.success && res.users.length) {
                     allUsersCache = res.users;
                 }
@@ -369,7 +369,7 @@ $(document).ready(function () {
 
                 // AJAX POST route - register
                 $.ajax({
-                    url: "api/ajax/register",
+                    url: App.api + "ajax/register",   // FIXED
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -408,7 +408,7 @@ $(document).ready(function () {
                             loadAndRenderUsers();
 
                             // Refresh search cache
-                            $.getJSON("api/users", function (r) {
+                            $.getJSON(App.api + "users", function (r) {   // FIXED
                                 if (r.success) allUsersCache = r.users;
                             });
 
@@ -543,7 +543,7 @@ $(document).ready(function () {
 
                     // POST with parameter in URL
                     $.ajax({
-                        url: "api/users/" + user.username + "/update",
+                        url: App.api + "users/" + user.username + "/update",   // FIXED
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
