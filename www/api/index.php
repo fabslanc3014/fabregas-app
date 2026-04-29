@@ -11,22 +11,39 @@ require_once __DIR__ . '/functions/functions.php';
 
 $app = new \Slim\Slim();
 
+// ── CORS ──────────────────────────────────────────────────────────────────────
+// Allows your front-end (any origin) to call this API.
+// Change '*' to 'http://localhost:8000' to restrict to local only,
+// or your production domain e.g. 'https://yoursite.com'
+$app->hook('slim.before', function () use ($app) {
+    $app->response->headers->set('Access-Control-Allow-Origin', '*');
+    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+});
+
+// ── OPTIONS pre-flight ────────────────────────────────────────────────────────
+// Browser sends this automatically before every cross-origin POST.
+// Without it, login/register/delete/update will all silently fail.
+$app->options('/(:path+)', function () use ($app) {
+    $app->response->headers->set('Access-Control-Allow-Origin', '*');
+    $app->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    $app->response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+    $app->response->setStatus(200);
+});
+
 // ── GET /users ────────────────────────────────────────────────────────────────
-// Called by: loadAndRenderUsers(), allUsersCache refresh
 $app->get('/users', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     echo json_encode(getAllUsers());
 });
 
 // ── GET /users/:username ──────────────────────────────────────────────────────
-// Called by: App.fetchUser() on profile page
 $app->get('/users/:username', function ($username) use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     echo json_encode(getUserByUsername($username));
 });
 
 // ── POST /ajax/login ──────────────────────────────────────────────────────────
-// Called by: login form submit
 $app->post('/ajax/login', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
@@ -34,7 +51,6 @@ $app->post('/ajax/login', function () use ($app) {
 });
 
 // ── POST /ajax/register ───────────────────────────────────────────────────────
-// Called by: signup form submit
 $app->post('/ajax/register', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
@@ -42,7 +58,6 @@ $app->post('/ajax/register', function () use ($app) {
 });
 
 // ── POST /users/delete ────────────────────────────────────────────────────────
-// Called by: .btn-remove click
 $app->post('/users/delete', function () use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
@@ -50,7 +65,6 @@ $app->post('/users/delete', function () use ($app) {
 });
 
 // ── POST /users/:username/update ──────────────────────────────────────────────
-// Called by: profile form submit
 $app->post('/users/:username/update', function ($username) use ($app) {
     $app->response->headers->set('Content-Type', 'application/json');
     $data = json_decode($app->request->getBody(), true);
