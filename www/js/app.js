@@ -46,7 +46,7 @@ $(document).ready(function () {
 
             // GET route with parameter
             $.ajax({
-                url: App.api + "users/" + username,          // FIXED
+                url: "api/users/" + username,
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -136,8 +136,9 @@ $(document).ready(function () {
                     setField("loginPassword", true, "Good");
                 }
 
+                // AJAX POST route - login
                 $.ajax({
-                    url: App.api + "ajax/login",              // FIXED
+                    url: "api/ajax/login",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -239,7 +240,7 @@ $(document).ready(function () {
 
             // GET route - no parameters
             function loadAndRenderUsers() {
-                $.getJSON(App.api + "users", function (res) {  // FIXED
+                $.getJSON("api/users", function (res) {
                     if (!res.success || res.users.length === 0) return;
 
                     var users = res.users.map(function (userObj, index) {
@@ -270,14 +271,14 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: App.api + "users/delete",             // FIXED
+                    url: "api/users/delete",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: username }),
                     success: function (res) {
                         if (res.success) {
                             loadAndRenderUsers();
-                            $.getJSON(App.api + "users", function (r) {  // FIXED
+                            $.getJSON("api/users", function (r) {
                                 if (r.success) allUsersCache = r.users;
                             });
                         } else {
@@ -293,7 +294,7 @@ $(document).ready(function () {
             // Search cache - GET route no parameters
             var allUsersCache = [];
 
-            $.getJSON(App.api + "users", function (res) {     // FIXED
+            $.getJSON("api/users", function (res) {
                 if (res.success && res.users.length) {
                     allUsersCache = res.users;
                 }
@@ -366,8 +367,9 @@ $(document).ready(function () {
 
                 var age = App.computeAge(formValues.birthday);
 
+                // AJAX POST route - register
                 $.ajax({
-                    url: App.api + "ajax/register",            // FIXED
+                    url: "api/ajax/register",
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -406,7 +408,7 @@ $(document).ready(function () {
                             loadAndRenderUsers();
 
                             // Refresh search cache
-                            $.getJSON(App.api + "users", function (r) {  // FIXED
+                            $.getJSON("api/users", function (r) {
                                 if (r.success) allUsersCache = r.users;
                             });
 
@@ -539,8 +541,9 @@ $(document).ready(function () {
 
                     var age = App.computeAge(updated.birthday);
 
+                    // POST with parameter in URL
                     $.ajax({
-                        url: App.api + "users/" + user.username + "/update",  // FIXED
+                        url: "api/users/" + user.username + "/update",
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
