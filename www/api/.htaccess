@@ -1,5 +1,17 @@
 RewriteEngine On
+RewriteBase /apislim4lance/api/
 
+# Always set CORS headers at Apache level too
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# CRITICAL: Do NOT block OPTIONS - pass it through to PHP
+RewriteCond %{REQUEST_METHOD} !OPTIONS
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# OPTIONS must also go through index.php
+RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^ index.php [QSA,L]
