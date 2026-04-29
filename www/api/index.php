@@ -1,15 +1,4 @@
 <?php
-// Allow requests from any origin (use specific origin in production)
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
 if (!function_exists('get_magic_quotes_gpc')) {
     function get_magic_quotes_gpc() {
         return false;
