@@ -4,7 +4,6 @@ $(document).ready(function () {
 
     const App = {
         canvas: $("#app"),
-        //api: "api/",
         api: "https://m.gohumano.com/apislim4lance/",
         usertype: localStorage.getItem("usertype"),
         token: localStorage.getItem("token"),
@@ -45,8 +44,9 @@ $(document).ready(function () {
                 return;
             }
 
+            // GET route with parameter
             $.ajax({
-                url: App.api + "users/" + username,        // FIXED
+                url: App.api + "users/" + username,          // FIXED
                 method: "GET",
                 contentType: "application/json",
                 success: function (res) {
@@ -64,6 +64,7 @@ $(document).ready(function () {
             });
         },
 
+        // Compute Age
         computeAge: function (birthday) {
             var dob = new Date(birthday);
             var today = new Date();
@@ -136,7 +137,7 @@ $(document).ready(function () {
                 }
 
                 $.ajax({
-                    url: App.api + "ajax/login",           // FIXED
+                    url: App.api + "ajax/login",              // FIXED
                     method: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ username: inputUser, password: inputPass }),
@@ -236,6 +237,7 @@ $(document).ready(function () {
                 });
             }
 
+            // GET route - no parameters
             function loadAndRenderUsers() {
                 $.getJSON(App.api + "users", function (res) {  // FIXED
                     if (!res.success || res.users.length === 0) return;
@@ -259,6 +261,7 @@ $(document).ready(function () {
             }
             loadAndRenderUsers();
 
+            // POST route - delete
             $(document).off("click", ".btn-remove").on("click", ".btn-remove", function () {
                 var username = $(this).data("username");
 
@@ -287,9 +290,10 @@ $(document).ready(function () {
                 });
             });
 
+            // Search cache - GET route no parameters
             var allUsersCache = [];
 
-            $.getJSON(App.api + "users", function (res) {      // FIXED
+            $.getJSON(App.api + "users", function (res) {     // FIXED
                 if (res.success && res.users.length) {
                     allUsersCache = res.users;
                 }
@@ -335,6 +339,7 @@ $(document).ready(function () {
                 runSearch();
             });
 
+            // AJAX POST route - register
             $("#signupform").off("submit").on("submit", function (e) {
                 e.preventDefault();
 
@@ -400,6 +405,7 @@ $(document).ready(function () {
 
                             loadAndRenderUsers();
 
+                            // Refresh search cache
                             $.getJSON(App.api + "users", function (r) {  // FIXED
                                 if (r.success) allUsersCache = r.users;
                             });
@@ -468,6 +474,7 @@ $(document).ready(function () {
                 $("#p_contact").val(user.contact    || "");
                 $("#p_email").val(user.email        || "");
 
+                // POST route with parameter - update
                 $("#profileForm").off("submit").on("submit", function (e) {
                     e.preventDefault();
 
